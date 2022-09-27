@@ -1,6 +1,7 @@
 .idea
 scratchpad
 *tsv.gz
+*.csv
 # Binaries for programs and plugins
 *.exe
 *.exe~
