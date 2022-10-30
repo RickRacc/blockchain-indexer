@@ -2,21 +2,35 @@ package model
 
 import (
 	"math/big"
+	"time"
 )
 
-type Transaction struct {
-	ID          string
+type Transaction interface {
+	//Chain() string
+	Chain() any
+}
+
+type BaseTransaction struct {
+	Id          uint64
+	Hash        string
 	BlockNumber *big.Int
-	From        string
-	To          string
-	Amount      *big.Int
 	Fee         *big.Int
-	//Size   int
+	Payments    []*TransactionPayment
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+func (t *BaseTransaction) Chain() string {
+	return ""
 }
 
 type EthTransaction struct {
-	Transaction
-	Gas                uint64
+	BaseTransaction
+	Gas                *big.Int
 	GasPrice           *big.Int
 	IsContractCreation bool
+}
+
+func (t *EthTransaction) Chain() string {
+	return "ETH"
 }

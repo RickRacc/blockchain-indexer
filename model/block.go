@@ -6,9 +6,11 @@ import (
 )
 
 type Block struct {
+	Id           uint64
 	ParentHash   string
 	Hash         string
 	Number       *big.Int
-	uint64       time.Time
 	Transactions []*EthTransaction
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }

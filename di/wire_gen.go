@@ -7,9 +7,13 @@
 package di
 
 import (
+	"database/sql"
+	"fmt"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"go-bonotans/blockchain/eth"
 	"go-bonotans/config"
+	"go-bonotans/indexer"
+	"go-bonotans/repository"
 	"log"
 )
 
@@ -35,4 +39,52 @@ func provideEthClient(rpcUrl string) *ethclient.Client {
 	}
 
 	return ethClient
+}
+
+func provideDbPool() (*sql.DB, error) {
+	cfg := config.Config()
+	host := cfg.String("db.host")
+	port := cfg.Int("db.port")
+	user := cfg.String("db.user")
+	password := cfg.String("db.password")
+	sslmode := cfg.String("db.sslmode")
+	dbname := cfg.String("db.name")
+
+	dbInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=%s", host, port, user, password, dbname, sslmode)
+	pool, err := sql.Open("postgres", dbInfo)
+	if err != nil {
+		return nil, err
+	}
+	pool.SetConnMaxLifetime(0)
+	pool.SetMaxIdleConns(3)
+	pool.SetMaxOpenConns(3)
+
+	return pool, nil
+}
+
+func provideBlockRepository(pool *sql.DB) *repository.BlockRepository {
+	return repository.NewBlockRepository(pool)
+}
+
+func provideTransactionRepository(pool *sql.DB) *repository.TransactionRepository {
+	return repository.NewTransactionRepository(pool)
+}
+
+func provideTransactionPaymentRepository(pool *sql.DB) *repository.TransactionPaymentRepository {
+	return repository.NewTransactionPaymentRepository(pool)
+}
+
+func InitializeIndexer() (indexer.Indexer, error) {
+
+	pool, err := provideDbPool()
+	if err != nil {
+		return nil, err
+	}
+	return indexer.NewDefaultIndexer(
+		InitializeEthereum(),
+		provideBlockRepository(pool),
+		provideTransactionRepository(pool),
+		provideTransactionPaymentRepository(pool),
+	), nil
 }

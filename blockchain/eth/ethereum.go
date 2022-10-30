@@ -42,29 +42,31 @@ func (eth *Ethereum) GetBlock(ctx context.Context, blockNumber *big.Int) *model.
 	for i, txn := range blockTxns {
 		fmt.Println("Processing", i)
 		receipt, _ := eth.Client.TransactionReceipt(context.Background(), txn.Hash())
-		//fmt.Println(receipt)
 		transaction := model.EthTransaction{
-			Transaction: model.Transaction{
-				ID:     txn.Hash().Hex(),
-				Amount: txn.Value(),
-				Fee:    new(big.Int).Mul(new(big.Int).SetUint64(txn.Gas()), txn.GasPrice()),
+			BaseTransaction: model.BaseTransaction{
+				Hash: txn.Hash().Hex(),
+				Fee:  new(big.Int).Mul(new(big.Int).SetUint64(txn.Gas()), txn.GasPrice()),
 			},
-			Gas:                txn.Gas(),
+			Gas:                new(big.Int).SetUint64(txn.Gas()),
 			GasPrice:           txn.GasPrice(),
 			IsContractCreation: false,
 		}
 
+		payment := model.TransactionPayment{
+			Amount: txn.Value(),
+		}
 		if txn.To() != nil {
-			transaction.To = txn.To().Hex()
+			payment.To = txn.To().Hex()
 		} else {
 			// This is a contract creation call and the address is available in receipt
-			transaction.To = receipt.ContractAddress.Hex()
+			payment.To = receipt.ContractAddress.Hex()
 			transaction.IsContractCreation = true
 		}
 
 		if msg, err := txn.AsMessage(types.NewEIP155Signer(eth.ChainID), nil); err == nil {
-			transaction.From = msg.From().Hex()
+			payment.From = msg.From().Hex()
 		}
+		transaction.Payments = []*model.TransactionPayment{&payment}
 		transactions[i] = &transaction
 	}
 

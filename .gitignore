@@ -9,6 +9,8 @@ scratchpad
 *.so
 *.dylib
 
+postgres/private.txt
+
 # Test binary, built with `go test -c`
 *.test
 

@@ -15,6 +15,7 @@ require (
 	github.com/google/wire v0.5.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/knadh/koanf v1.4.3 // indirect
+	github.com/lib/pq v1.10.7 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
