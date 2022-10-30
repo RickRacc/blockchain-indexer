@@ -19,56 +19,17 @@ func NewBlockRepository(pool *sql.DB) *BlockRepository {
 }
 
 func (repo *BlockRepository) Process(ctx context.Context, block *model.Block) (*model.Block, error) {
-	//tx := ctx.Value(TRANSACTION)
-	//var err error
-	//if tx == nil {
-	//	tx, err = repo.pool.Begin()
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//}
-
-	//var ids [2]int64
-	//var id big.Int
-	//sql := fmt.Sprintf("insert into block (\"Hash\", \"ParentHash\", \"Number\") values ('%s', '%s', %s) returning *", //"Number"
-	//	block.Hash, block.ParentHash, block.Number)
-
-	sql := fmt.Sprintf("insert into block (%s) values ('%s', '%s', %s) returning %s",
+	stmt := fmt.Sprintf("insert into block (%s) values ('%s', '%s', %s) returning %s",
 		BLOCK_INSERT_COLS, block.Hash, block.ParentHash, block.Number, BLOCK_SELECT_COLS)
 
-	//sql := "insert into block (\"Hash\", \"ParentHash\", \"Number\") values ('a', 'aa', 11), ('b', 'bb', 22) returning \"Id\""
-	//block.Id = new(big.Int)
-	//var b model.Block
-	//var num []byte
-	//err := repo.pool.QueryRowContext(ctx, sql).Scan(&num)
-
-	row := repo.pool.QueryRowContext(ctx, sql)
+	row := repo.pool.QueryRowContext(ctx, stmt)
 
 	b, err := repo.Read(row)
 	if err != nil {
 		return nil, err
 	}
 
-	// Write transaction and transaction payments
-
-	//block.Id = new(big.Int).SetUint64(id)
-	//fmt.Printf("%v", ret)
 	return b, nil
-	//counter := 0
-	//for ret.Next() {
-	//	var id int64
-	//	ret.Scan(&id)
-	//	ids[counter] = id
-	//	counter += 1
-	//}
-
-	//tx.Commit()
-	//id, err := result.LastInsertId()
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	//return big.NewInt(ids[0]), nil
 }
 
 func (repo *BlockRepository) Read(row *sql.Row) (*model.Block, error) {
