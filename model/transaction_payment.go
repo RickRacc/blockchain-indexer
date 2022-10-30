@@ -6,7 +6,7 @@ import (
 )
 
 type TransactionPayment struct {
-	Id            *big.Int
+	Id            uint64
 	TransactionId uint64
 	From          string
 	To            string

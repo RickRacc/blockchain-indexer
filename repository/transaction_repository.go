@@ -3,7 +3,9 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"go-bonotans/model"
+	"math/big"
 )
 
 type TransactionRepository struct {
@@ -16,6 +18,38 @@ func NewTransactionRepository(pool *sql.DB) *TransactionRepository {
 	}
 }
 
-func (repo *TransactionRepository) Save(ctx context.Context, block *model.EthTransaction) error {
-	return nil
+func (repo *TransactionRepository) Save(ctx context.Context, transaction *model.EthTransaction) (*model.EthTransaction, error) {
+	stmt := fmt.Sprintf("insert into transaction (%s) values ('%s', '%s', %s, %s, %s, %t) returning %s",
+		TRANSACTION_INSERT_COLS, transaction.Hash, transaction.BlockNumber, transaction.Fee,
+		transaction.Gas, transaction.GasPrice, transaction.IsContractCreation, TRANSACTION_SELECT_COLS)
+
+	row := repo.pool.QueryRowContext(ctx, stmt)
+
+	b, err := repo.Read(row)
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
+
+func (repo *TransactionRepository) Read(row *sql.Row) (*model.EthTransaction, error) {
+	var number []byte
+	var fee []byte
+	var gas []byte
+	var gasPrice []byte
+
+	var transaction model.EthTransaction
+
+	err := row.Scan(&transaction.Id, &transaction.Hash, &number, &fee, &gas, &gasPrice,
+		&transaction.IsContractCreation, &transaction.CreatedAt, &transaction.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+	transaction.BlockNumber = new(big.Int).SetBytes(number)
+	transaction.Fee = new(big.Int).SetBytes(fee)
+	transaction.Gas = new(big.Int).SetBytes(gas)
+	transaction.GasPrice = new(big.Int).SetBytes(gasPrice)
+
+	return &transaction, nil
 }
