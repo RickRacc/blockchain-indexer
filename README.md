@@ -8,3 +8,4 @@ At present, the application supports Ethereum, and it can be extended to support
 
 # Start Postgres
 docker-compose -f postgres/stack.yml up
+Import schema in the database from postgres/db.sql
