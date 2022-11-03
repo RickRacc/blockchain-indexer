@@ -1,8 +1,9 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
-	"fmt"
+	"github.com/stretchr/testify/assert"
 	"go-bonotans/di"
 	"go-bonotans/model"
 	"math/big"
@@ -43,6 +44,7 @@ func shutdown() {
 }
 
 func TestCreateBlock(t *testing.T) {
+	assert := assert.New(t)
 	block := model.Block{
 		ParentHash:   "parenthash",
 		Hash:         "hash",
@@ -50,5 +52,9 @@ func TestCreateBlock(t *testing.T) {
 		Transactions: nil,
 	}
 
-	fmt.Printf("%s", &block)
+	b, err := repo.Process(context.Background(), &block)
+	assert.NoError(err, "Saving block returned an error")
+	assert.NotNil(b.Id)
+	assert.NotNil(b.CreatedAt)
+	assert.NotNil(b.UpdatedAt)
 }
