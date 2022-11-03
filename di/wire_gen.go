@@ -20,19 +20,19 @@ import (
 // Injectors from di.go:
 
 func InitializeEthereum() *eth.Ethereum {
-	string2 := ethRpcUrl()
-	client := provideEthClient(string2)
+	string2 := EthRpcUrl()
+	client := ProvideEthClient(string2)
 	ethereum := eth.New(client)
 	return ethereum
 }
 
 // di.go:
 
-func ethRpcUrl() string {
+func EthRpcUrl() string {
 	return config.Config().String("eth.rpcUrl")
 }
 
-func provideEthClient(rpcUrl string) *ethclient.Client {
+func ProvideEthClient(rpcUrl string) *ethclient.Client {
 	ethClient, err := ethclient.Dial(rpcUrl)
 	if err != nil {
 		log.Fatal(err)
@@ -41,7 +41,7 @@ func provideEthClient(rpcUrl string) *ethclient.Client {
 	return ethClient
 }
 
-func provideDbPool() (*sql.DB, error) {
+func ProvideDbPool() (*sql.DB, error) {
 	cfg := config.Config()
 	host := cfg.String("db.host")
 	port := cfg.Int("db.port")
@@ -63,28 +63,28 @@ func provideDbPool() (*sql.DB, error) {
 	return pool, nil
 }
 
-func provideBlockRepository(pool *sql.DB) *repository.BlockRepository {
+func ProvideBlockRepository(pool *sql.DB) *repository.BlockRepository {
 	return repository.NewBlockRepository(pool)
 }
 
-func provideTransactionRepository(pool *sql.DB) *repository.TransactionRepository {
+func ProvideTransactionRepository(pool *sql.DB) *repository.TransactionRepository {
 	return repository.NewTransactionRepository(pool)
 }
 
-func provideTransactionPaymentRepository(pool *sql.DB) *repository.TransactionPaymentRepository {
+func ProvideTransactionPaymentRepository(pool *sql.DB) *repository.TransactionPaymentRepository {
 	return repository.NewTransactionPaymentRepository(pool)
 }
 
 func InitializeIndexer() (indexer.Indexer, error) {
 
-	pool, err := provideDbPool()
+	pool, err := ProvideDbPool()
 	if err != nil {
 		return nil, err
 	}
 	return indexer.NewDefaultIndexer(
 		InitializeEthereum(),
-		provideBlockRepository(pool),
-		provideTransactionRepository(pool),
-		provideTransactionPaymentRepository(pool),
+		ProvideBlockRepository(pool),
+		ProvideTransactionRepository(pool),
+		ProvideTransactionPaymentRepository(pool),
 	), nil
 }
