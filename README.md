@@ -7,5 +7,7 @@ The application will allow easy search for transactions, tokens, account activit
 At present, the application supports Ethereum, and it can be extended to support other blockchain such as Bitcoin.
 
 # Start Postgres
+Reference: https://hub.docker.com/_/postgres
+Set postgres password in postgres/stack.yml
 docker-compose -f postgres/stack.yml up
 Import schema in the database from postgres/db.sql

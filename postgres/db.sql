@@ -1,10 +1,10 @@
 -- Adminer 4.8.1 PostgreSQL 14.5 (Debian 14.5-1.pgdg110+1) dump
 
-\connect "bonotans";
+-- connect "bonotans";
 
 DROP TABLE IF EXISTS "block";
 DROP SEQUENCE IF EXISTS "block_Id_seq";
-CREATE SEQUENCE "block_Id_seq" INCREMENT  MINVALUE  MAXVALUE  CACHE ;
+CREATE SEQUENCE "block_Id_seq";
 
 CREATE TABLE "public"."block" (
                                   "Id" bigint DEFAULT nextval('"block_Id_seq"') NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE "public"."block" (
 
 DROP TABLE IF EXISTS "eth_transaction";
 DROP SEQUENCE IF EXISTS "transaction_Id_seq";
-CREATE SEQUENCE "transaction_Id_seq" INCREMENT  MINVALUE  MAXVALUE  CACHE ;
+CREATE SEQUENCE "transaction_Id_seq" ;
 
 CREATE TABLE "public"."eth_transaction" (
                                             "Id" bigint DEFAULT nextval('"transaction_Id_seq"') NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE "public"."eth_transaction" (
 
 DROP TABLE IF EXISTS "indexer_position";
 DROP SEQUENCE IF EXISTS indexer_position_id_seq;
-CREATE SEQUENCE indexer_position_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1;
+CREATE SEQUENCE indexer_position_id_seq;
 
 CREATE TABLE "public"."indexer_position" (
                                              "id" bigint DEFAULT nextval('indexer_position_id_seq') NOT NULL,

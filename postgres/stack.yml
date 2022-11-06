@@ -8,7 +8,10 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: ******
+      POSTGRES_PASSWORD: example
+      PGDATA: /opt/postgresql/data
+    volumes:
+      - ~/dev/postgresql/data:/opt/postgresql/data
 
   adminer:
     image: adminer
