@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 	"go-bonotans/di"
 	"go-bonotans/model"
 	"math/big"
@@ -11,40 +12,31 @@ import (
 	"testing"
 )
 
-func TestMain(m *testing.M) {
-	err := setup()
+type BlockTestSuite struct {
+	suite.Suite
+	repo *BlockRepository
+	pool *sql.DB
+}
+
+func (suite *BlockTestSuite) SetupAllSuite() {
+	var err error
+	suite.pool, err = di.ProvideDbPool()
 	if err != nil {
 		os.Exit(1)
 	}
-	code := m.Run()
-	shutdown()
-	os.Exit(code)
+
+	suite.repo = di.ProvideBlockRepository(suite.pool)
 }
 
-var repo *BlockRepository
-var pool *sql.DB
-
-func setup() error {
-	var err error
-	pool, err = di.ProvideDbPool()
+func (suite *BlockTestSuite) TearDownAllSuite() {
+	err := suite.pool.Close()
 	if err != nil {
-		return err
+		os.Exit(1)
 	}
-
-	repo = di.ProvideBlockRepository(pool)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
-func shutdown() {
-
-}
-
-func TestCreateBlock(t *testing.T) {
-	assert := assert.New(t)
+func (suite *BlockTestSuite) TestCreateBlock() {
+	assert := assert.New(suite.T())
 	block := model.Block{
 		ParentHash:   "parenthash",
 		Hash:         "hash",
@@ -52,9 +44,13 @@ func TestCreateBlock(t *testing.T) {
 		Transactions: nil,
 	}
 
-	b, err := repo.Process(context.Background(), &block)
+	b, err := suite.repo.Process(context.Background(), &block)
 	assert.NoError(err, "Saving block returned an error")
 	assert.NotNil(b.Id)
 	assert.NotNil(b.CreatedAt)
 	assert.NotNil(b.UpdatedAt)
+}
+
+func TestBlockTestSuite(t *testing.T) {
+	suite.Run(t, new(BlockTestSuite))
 }
