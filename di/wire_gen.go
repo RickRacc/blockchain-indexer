@@ -19,11 +19,14 @@ import (
 
 // Injectors from di.go:
 
-func InitializeEthereum() *eth.Ethereum {
+func InitializeEthereum() (*eth.Ethereum, error) {
 	string2 := EthRpcUrl()
 	client := ProvideEthClient(string2)
-	ethereum := eth.New(client)
-	return ethereum
+	ethereum, err := eth.New(client)
+	if err != nil {
+		return nil, err
+	}
+	return ethereum, nil
 }
 
 // di.go:
@@ -81,9 +84,11 @@ func InitializeIndexer() (indexer.Indexer, error) {
 	if err != nil {
 		return nil, err
 	}
-	return indexer.NewDefaultIndexer(
-		InitializeEthereum(),
-		ProvideBlockRepository(pool),
+	eth2, err := InitializeEthereum()
+	if err != nil {
+		return nil, err
+	}
+	return indexer.NewDefaultIndexer(eth2, ProvideBlockRepository(pool),
 		ProvideTransactionRepository(pool),
 		ProvideTransactionPaymentRepository(pool),
 	), nil

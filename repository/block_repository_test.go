@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"go-bonotans/di"
+	"go-bonotans/di/infra"
 	"go-bonotans/model"
 	"math/big"
 	"os"
@@ -20,12 +20,14 @@ type BlockTestSuite struct {
 
 func (suite *BlockTestSuite) SetupAllSuite() {
 	var err error
-	suite.pool, err = di.ProvideDbPool()
+
+	diInfra := infra.DiInfra{}
+	suite.pool, err = diInfra.ProvideDbPool()
 	if err != nil {
 		os.Exit(1)
 	}
 
-	suite.repo = di.ProvideBlockRepository(suite.pool)
+	suite.repo = NewBlockRepository(suite.pool)
 }
 
 func (suite *BlockTestSuite) TearDownAllSuite() {

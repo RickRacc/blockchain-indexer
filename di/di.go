@@ -64,9 +64,9 @@ func ProvideTransactionPaymentRepository(pool *sql.DB) *repository.TransactionPa
 	return repository.NewTransactionPaymentRepository(pool)
 }
 
-func InitializeEthereum() *eth.Ethereum { //
+func InitializeEthereum() (*eth.Ethereum, error) { //
 	wire.Build(eth.New, ProvideEthClient, EthRpcUrl)
-	return &eth.Ethereum{}
+	return &eth.Ethereum{}, nil
 }
 
 func InitializeIndexer() (indexer.Indexer, error) {
@@ -79,8 +79,12 @@ func InitializeIndexer() (indexer.Indexer, error) {
 	if err != nil {
 		return nil, err
 	}
+	eth, err := InitializeEthereum()
+	if err != nil {
+		return nil, err
+	}
 	return indexer.NewDefaultIndexer(
-		InitializeEthereum(),
+		eth,
 		ProvideBlockRepository(pool),
 		ProvideTransactionRepository(pool),
 		ProvideTransactionPaymentRepository(pool),

@@ -14,12 +14,15 @@ type Ethereum struct {
 	ChainID *big.Int
 }
 
-func New(client *ethclient.Client) *Ethereum {
-	chainID, _ := client.NetworkID(context.Background())
+func New(client *ethclient.Client) (*Ethereum, error) {
+	chainID, err := client.NetworkID(context.Background())
+	if err != nil {
+		return nil, err
+	}
 	return &Ethereum{
 		Client:  client,
 		ChainID: chainID,
-	}
+	}, nil
 }
 
 func (eth *Ethereum) GetTip(ctx context.Context) *big.Int {
