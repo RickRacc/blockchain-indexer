@@ -19,7 +19,7 @@ func NewTransactionPaymentRepository(pool *sql.DB) *TransactionPaymentRepository
 }
 
 func (repo *TransactionPaymentRepository) Save(ctx context.Context, payment *model.TransactionPayment) (*model.TransactionPayment, error) {
-	stmt := fmt.Sprintf("insert into transaction_payment (%s) values ('%s', '%s', %s, %d, %s) returning %s",
+	stmt := fmt.Sprintf("insert into transaction_payment (%s) values ('%v', '%s', '%s', '%d', '%s') returning %s",
 		TRANSACTION_PAYMENT_INSERT_COLS, payment.TransactionId, payment.From, payment.To, payment.Index,
 		payment.Amount, TRANSACTION_PAYMENT_SELECT_COLS)
 
