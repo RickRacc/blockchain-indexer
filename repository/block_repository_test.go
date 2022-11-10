@@ -5,36 +5,42 @@ import (
 	"database/sql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"go-bonotans/di/infra"
 	"go-bonotans/model"
+	"go-bonotans/test"
 	"math/big"
-	"os"
 	"testing"
 )
 
 type BlockTestSuite struct {
-	suite.Suite
+	test.BaseTestSuite
 	repo *BlockRepository
 	pool *sql.DB
 }
 
-func (suite *BlockTestSuite) SetupAllSuite() {
-	var err error
+//func (suite *BlockTestSuite) SetupAllSuite() {
+//	var err error
+//
+//	diInfra := infra.DiInfra{}
+//	suite.pool, err = diInfra.ProvideDbPool()
+//	if err != nil {
+//		os.Exit(1)
+//	}
+//
+//	suite.repo = NewBlockRepository(suite.pool)
+//}
+//
+//func (suite *BlockTestSuite) TearDownAllSuite() {
+//	err := suite.pool.Close()
+//	if err != nil {
+//		os.Exit(1)
+//	}
+//}
 
-	diInfra := infra.DiInfra{}
-	suite.pool, err = diInfra.ProvideDbPool()
-	if err != nil {
-		os.Exit(1)
-	}
-
+func (suite *BlockTestSuite) SetupAllSuiteInternal() {
 	suite.repo = NewBlockRepository(suite.pool)
 }
 
-func (suite *BlockTestSuite) TearDownAllSuite() {
-	err := suite.pool.Close()
-	if err != nil {
-		os.Exit(1)
-	}
+func (suite *BlockTestSuite) TearDownAllSuiteInternal() {
 }
 
 func (suite *BlockTestSuite) TestCreateBlock() {
