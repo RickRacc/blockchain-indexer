@@ -17,25 +17,6 @@ type BlockTestSuite struct {
 	pool *sql.DB
 }
 
-//func (suite *BlockTestSuite) SetupAllSuite() {
-//	var err error
-//
-//	diInfra := infra.DiInfra{}
-//	suite.pool, err = diInfra.ProvideDbPool()
-//	if err != nil {
-//		os.Exit(1)
-//	}
-//
-//	suite.repo = NewBlockRepository(suite.pool)
-//}
-//
-//func (suite *BlockTestSuite) TearDownAllSuite() {
-//	err := suite.pool.Close()
-//	if err != nil {
-//		os.Exit(1)
-//	}
-//}
-
 func (suite *BlockTestSuite) SetupAllSuiteInternal() {
 	suite.repo = NewBlockRepository(suite.pool)
 }
