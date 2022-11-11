@@ -18,7 +18,7 @@ type DefaultIndexer struct {
 	blockRepository              *repository.BlockRepository
 	transactionRepository        *repository.TransactionRepository
 	transactionPaymentRepository *repository.TransactionPaymentRepository
-	blockPositionRepository      *repository.BlockPositionRepository
+	blockPositionRepository      *repository.IndexerPositionRepository
 }
 
 func NewDefaultIndexer(

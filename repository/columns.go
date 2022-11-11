@@ -1,5 +1,8 @@
 package repository
 
+const INDEXER_POSITION_INSERT_COLS = "coin_type, position"
+const INDEXER_POSITION_SELECT_COLS = "id, coin_type, position, created_at, updated_at"
+
 const BLOCK_INSERT_COLS = "hash, parent_hash, number"
 const BLOCK_SELECT_COLS = "id, hash, parent_hash, number, created_at, updated_at"
 
