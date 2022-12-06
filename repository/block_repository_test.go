@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"go-bonotans/model"
@@ -14,11 +13,10 @@ import (
 type BlockTestSuite struct {
 	test.BaseTestSuite
 	repo *BlockRepository
-	pool *sql.DB
 }
 
 func (suite *BlockTestSuite) SetupAllSuiteInternal() {
-	suite.repo = NewBlockRepository(suite.pool)
+	suite.repo = NewBlockRepository(suite.Pool)
 }
 
 func (suite *BlockTestSuite) TearDownAllSuiteInternal() {

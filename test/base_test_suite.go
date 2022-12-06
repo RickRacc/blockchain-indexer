@@ -14,14 +14,14 @@ type BaseTestSuiteInternal interface {
 
 type BaseTestSuite struct {
 	suite.Suite
-	pool *sql.DB
+	Pool *sql.DB
 }
 
 func (suite *BaseTestSuite) SetupAllSuite() {
 	var err error
 
 	diInfra := infra.DiInfra{}
-	suite.pool, err = diInfra.ProvideDbPool()
+	suite.Pool, err = diInfra.ProvideDbPool()
 	if err != nil {
 		os.Exit(1)
 	}
@@ -30,7 +30,7 @@ func (suite *BaseTestSuite) SetupAllSuite() {
 
 func (suite *BaseTestSuite) TearDownAllSuite() {
 	suite.TearDownAllSuiteInternal()
-	err := suite.pool.Close()
+	err := suite.Pool.Close()
 	if err != nil {
 		os.Exit(1)
 	}
