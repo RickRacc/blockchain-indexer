@@ -2,44 +2,35 @@ package test
 
 import (
 	"database/sql"
+	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/suite"
 	"go-bonotans/di/infra"
 	"os"
 )
 
-type BaseTestSuiteInternal interface {
-	SetupAllSuiteInternal()
-	TearDownAllSuiteInternal()
-}
+//type BaseTestSuiteInternal interface {
+//	SetupSuiteInternal()
+//	TearDownSuiteInternal()
+//}
 
 type BaseTestSuite struct {
 	suite.Suite
 	Pool *sql.DB
 }
 
-func (suite *BaseTestSuite) SetupAllSuite() {
+func (suite *BaseTestSuite) SetupSuite() {
 	var err error
 
 	diInfra := infra.DiInfra{}
 	suite.Pool, err = diInfra.ProvideDbPool()
 	if err != nil {
-		os.Exit(1)
+		panic(err)
 	}
-	suite.SetupAllSuiteInternal()
 }
 
-func (suite *BaseTestSuite) TearDownAllSuite() {
-	suite.TearDownAllSuiteInternal()
+func (suite *BaseTestSuite) TearDownSuite() {
 	err := suite.Pool.Close()
 	if err != nil {
 		os.Exit(1)
 	}
-}
-
-func (suite *BaseTestSuite) SetupAllSuiteInternal() {
-
-}
-
-func (suite *BaseTestSuite) TearDownAllSuiteInternal() {
-
 }

@@ -15,11 +15,13 @@ type BlockTestSuite struct {
 	repo *BlockRepository
 }
 
-func (suite *BlockTestSuite) SetupAllSuiteInternal() {
+func (suite *BlockTestSuite) SetupSuite() {
+	suite.BaseTestSuite.SetupSuite()
 	suite.repo = NewBlockRepository(suite.Pool)
 }
 
-func (suite *BlockTestSuite) TearDownAllSuiteInternal() {
+func (suite *BlockTestSuite) TearDownSuite() {
+	suite.BaseTestSuite.TearDownSuite()
 }
 
 func (suite *BlockTestSuite) TestCreateBlock() {
