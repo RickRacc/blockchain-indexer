@@ -10,21 +10,21 @@ import (
 	"testing"
 )
 
-type BlockTestSuite struct {
+type BlockRepositoryTestSuite struct {
 	test.BaseTestSuite
 	repo *BlockRepository
 }
 
-func (suite *BlockTestSuite) SetupSuite() {
+func (suite *BlockRepositoryTestSuite) SetupSuite() {
 	suite.BaseTestSuite.SetupSuite()
 	suite.repo = NewBlockRepository(suite.Pool)
 }
 
-func (suite *BlockTestSuite) TearDownSuite() {
+func (suite *BlockRepositoryTestSuite) TearDownSuite() {
 	suite.BaseTestSuite.TearDownSuite()
 }
 
-func (suite *BlockTestSuite) TestCreateBlock() {
+func (suite *BlockRepositoryTestSuite) TestCreateBlock() {
 	assert := assert.New(suite.T())
 	block := model.Block{
 		ParentHash:   "parenthash",
@@ -40,6 +40,6 @@ func (suite *BlockTestSuite) TestCreateBlock() {
 	assert.NotNil(b.UpdatedAt)
 }
 
-func TestBlockTestSuite(t *testing.T) {
-	suite.Run(t, new(BlockTestSuite))
+func TestBlockRepositoryTestSuite(t *testing.T) {
+	suite.Run(t, new(BlockRepositoryTestSuite))
 }
