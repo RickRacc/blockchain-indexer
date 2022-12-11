@@ -8,11 +8,6 @@ import (
 	"os"
 )
 
-//type BaseTestSuiteInternal interface {
-//	SetupSuiteInternal()
-//	TearDownSuiteInternal()
-//}
-
 type BaseTestSuite struct {
 	suite.Suite
 	Pool *sql.DB

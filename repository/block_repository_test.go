@@ -4,9 +4,7 @@ import (
 	"context"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"go-bonotans/model"
 	"go-bonotans/test"
-	"math/big"
 	"testing"
 )
 
@@ -26,14 +24,9 @@ func (suite *BlockRepositoryTestSuite) TearDownSuite() {
 
 func (suite *BlockRepositoryTestSuite) TestCreateBlock() {
 	assert := assert.New(suite.T())
-	block := model.Block{
-		ParentHash:   "parenthash",
-		Hash:         "hash",
-		Number:       new(big.Int).SetInt64(1),
-		Transactions: nil,
-	}
+	block := test.GetBlock()
 
-	b, err := suite.repo.Process(context.Background(), &block)
+	b, err := suite.repo.Process(context.Background(), block)
 	assert.NoError(err, "Saving block returned an error")
 	assert.NotNil(b.Id)
 	assert.NotNil(b.CreatedAt)
