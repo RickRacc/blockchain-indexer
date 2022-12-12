@@ -13,7 +13,7 @@ type Transaction interface {
 type BaseTransaction struct {
 	Id          uint64
 	Hash        string
-	BlockNumber *big.Int
+	BlockNumber int64
 	Fee         *big.Int
 	Payments    []*TransactionPayment
 	CreatedAt   time.Time

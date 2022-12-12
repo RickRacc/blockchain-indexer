@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"go-bonotans/model"
-	"math/big"
 )
 
 type BlockRepository struct {
@@ -19,7 +18,7 @@ func NewBlockRepository(pool *sql.DB) *BlockRepository {
 }
 
 func (repo *BlockRepository) Process(ctx context.Context, block *model.Block) (*model.Block, error) {
-	stmt := fmt.Sprintf("insert into block (%s) values ('%s', '%s', %s) returning %s",
+	stmt := fmt.Sprintf("insert into block (%s) values ('%s', '%s', %v) returning %s",
 		BLOCK_INSERT_COLS, block.Hash, block.ParentHash, block.Number, BLOCK_SELECT_COLS)
 
 	row := repo.pool.QueryRowContext(ctx, stmt)
@@ -33,14 +32,12 @@ func (repo *BlockRepository) Process(ctx context.Context, block *model.Block) (*
 }
 
 func (repo *BlockRepository) Read(row *sql.Row) (*model.Block, error) {
-	var number []byte
 	var block model.Block
 
-	err := row.Scan(&block.Id, &block.Hash, &block.ParentHash, &number, &block.CreatedAt, &block.UpdatedAt)
+	err := row.Scan(&block.Id, &block.Hash, &block.ParentHash, &block.Number, &block.CreatedAt, &block.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
-	block.Number = new(big.Int).SetBytes(number)
 
 	return &block, nil
 }
