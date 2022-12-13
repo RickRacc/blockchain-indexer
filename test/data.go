@@ -29,3 +29,14 @@ func GetEthTransaction() *model.EthTransaction {
 
 	return &transaction
 }
+
+func GetTransactionPayment() *model.TransactionPayment {
+	transactionPayment := model.TransactionPayment{
+		From:   "from",
+		To:     "to",
+		Index:  0,
+		Amount: big.NewInt(1000),
+	}
+
+	return &transactionPayment
+}

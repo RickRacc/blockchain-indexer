@@ -38,7 +38,7 @@ func (repo *TransactionPaymentRepository) Read(row *sql.Row) (*model.Transaction
 	var payment model.TransactionPayment
 
 	err := row.Scan(&payment.Id, &payment.TransactionId, &payment.From, &payment.To,
-		&payment.Index, amount, &payment.CreatedAt, &payment.UpdatedAt)
+		&payment.Index, &amount, &payment.CreatedAt, &payment.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
