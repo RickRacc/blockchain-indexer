@@ -8,6 +8,9 @@ At present, the application supports Ethereum, and it can be extended to support
 
 # Start Postgres
 Reference: https://hub.docker.com/_/postgres
-Set postgres password in postgres/stack.yml
-docker-compose -f postgres/stack.yml up
+Set postgres password in docker/postgres-compose.yml
+docker-compose -f docker/postgres-compose..yml up
 Import schema in the database from postgres/db.sql
+
+# Start Ethereum
+docker-compose -f docker/eth-dev-compose.yml up
