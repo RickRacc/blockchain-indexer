@@ -35,7 +35,7 @@ func (eth *Ethereum) GetBlock(ctx context.Context, blockNumber *big.Int) *model.
 	block := model.Block{
 		ParentHash: b.ParentHash().Hex(),
 		Hash:       b.Hash().Hex(),
-		Number:     blockNumber,
+		Number:     blockNumber.Int64(),
 		//Time:         b.Time(),
 		Transactions: nil,
 	}

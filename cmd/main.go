@@ -4,8 +4,6 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"go-bonotans/di"
-	//_ "go-bonotans/scanner"
-	"math/big"
 )
 
 func main() {
@@ -14,5 +12,5 @@ func main() {
 		fmt.Printf("ERROR: %s", err)
 	}
 
-	idx.Index(big.NewInt(0), 100)
+	idx.Index(1, 100)
 }

@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 	"go-bonotans/blockchain"
-	"go-bonotans/model"
 	"go-bonotans/repository"
 	"math/big"
 )
 
 type Indexer interface {
-	Index(startBlock *big.Int, numBlocks int)
+	Index(startBlock int64, numBlocks int)
 }
 
 type DefaultIndexer struct {
@@ -34,31 +33,35 @@ func NewDefaultIndexer(
 	}
 }
 
-func (indexer *DefaultIndexer) Index(startBlock *big.Int, numBlocks int) {
+func (indexer *DefaultIndexer) Index(startBlock int64, numBlocks int) {
 	ctx := context.Background()
 
-	block := model.Block{
-		Hash:       "H1",
-		ParentHash: "PH1",
-		Number:     big.NewInt(1),
-	}
+	for i := 0; i < numBlocks; i++ {
+		blockNum := startBlock + int64(i)
+		block := indexer.blockchain.GetBlock(ctx, big.NewInt(blockNum))
+		fmt.Println(block.Hash)
 
-	b, err := indexer.blockRepository.Process(ctx, &block)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-		return
-	}
+		_, err := indexer.blockRepository.Process(ctx, block)
+		if err != nil {
+			fmt.Printf("Error: %s", err)
+			return
+		}
 
-	t := block.Transactions[0]
-	fmt.Printf("Chain %s", t.Chain())
+		for _, transaction := range block.Transactions {
+			_, err = indexer.transactionRepository.Save(ctx, transaction)
+			if err != nil {
+				fmt.Printf("Error: %s", err)
+				return
+			}
 
-	for _, transaction := range block.Transactions {
-		indexer.transactionRepository.Save(ctx, transaction)
-
-		for _, payment := range transaction.Payments {
-			indexer.transactionPaymentRepository.Save(ctx, payment)
+			for _, payment := range transaction.Payments {
+				_, err := indexer.transactionPaymentRepository.Save(ctx, payment)
+				if err != nil {
+					fmt.Printf("Error: %s", err)
+					return
+				}
+			}
 		}
 	}
 
-	fmt.Printf("SUCCESS: inserted block id: %s", b.Id)
 }
