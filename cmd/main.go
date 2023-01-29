@@ -12,5 +12,8 @@ func main() {
 		fmt.Printf("ERROR: %s", err)
 	}
 
-	idx.Index(1, 100)
+	startBlock := int64(600004)
+	numBlocks := 1
+
+	idx.Index(startBlock, numBlocks)
 }

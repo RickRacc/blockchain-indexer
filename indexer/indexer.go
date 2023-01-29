@@ -48,13 +48,14 @@ func (indexer *DefaultIndexer) Index(startBlock int64, numBlocks int) {
 		}
 
 		for _, transaction := range block.Transactions {
-			_, err = indexer.transactionRepository.Save(ctx, transaction)
+			savedTransaction, err := indexer.transactionRepository.Save(ctx, transaction)
 			if err != nil {
 				fmt.Printf("Error: %s", err)
 				return
 			}
 
 			for _, payment := range transaction.Payments {
+				payment.TransactionId = savedTransaction.Id
 				_, err := indexer.transactionPaymentRepository.Save(ctx, payment)
 				if err != nil {
 					fmt.Printf("Error: %s", err)

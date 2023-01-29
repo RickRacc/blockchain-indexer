@@ -18,6 +18,7 @@ func NewBlockRepository(pool *sql.DB) *BlockRepository {
 }
 
 func (repo *BlockRepository) Process(ctx context.Context, block *model.Block) (*model.Block, error) {
+	repo.Delete(ctx, block.Number)
 	stmt := fmt.Sprintf("insert into block (%s) values ('%s', '%s', %v) returning %s",
 		BLOCK_INSERT_COLS, block.Hash, block.ParentHash, block.Number, BLOCK_SELECT_COLS)
 
@@ -32,7 +33,7 @@ func (repo *BlockRepository) Process(ctx context.Context, block *model.Block) (*
 }
 
 func (repo *BlockRepository) Delete(ctx context.Context, blockNumber int64) (*model.Block, error) {
-	stmt := fmt.Sprintf("delete from block where block_number=%v returning %s",
+	stmt := fmt.Sprintf("delete from block where number=%v returning %s",
 		blockNumber, BLOCK_SELECT_COLS)
 
 	row := repo.pool.QueryRowContext(ctx, stmt)

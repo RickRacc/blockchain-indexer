@@ -66,11 +66,11 @@ func (suite *TransactionPaymentRepositoryTestSuite) TestBlockCasacadeDelete() {
 	transactionPayment.TransactionId = transaction.Id
 	transactionPayment, _ = suite.transactionPaymentRepo.Save(ctx, transactionPayment)
 
-	suite.blockRepo.Delete(ctx, block.Number)
+	var err error
+	b, err = suite.blockRepo.Delete(ctx, block.Number)
 
-	assert.NotNil(transactionPayment.Id)
-	assert.NotNil(transactionPayment.CreatedAt)
-	assert.NotNil(transactionPayment.UpdatedAt)
+	assert.NotNil(b)
+	assert.Nil(err)
 }
 
 func TestTransactionPaymentRepositoryTestSuite(t *testing.T) {

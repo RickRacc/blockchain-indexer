@@ -47,8 +47,9 @@ func (eth *Ethereum) GetBlock(ctx context.Context, blockNumber *big.Int) *model.
 		receipt, _ := eth.Client.TransactionReceipt(context.Background(), txn.Hash())
 		transaction := model.EthTransaction{
 			BaseTransaction: model.BaseTransaction{
-				Hash: txn.Hash().Hex(),
-				Fee:  new(big.Int).Mul(new(big.Int).SetUint64(txn.Gas()), txn.GasPrice()),
+				Hash:        txn.Hash().Hex(),
+				BlockNumber: block.Number,
+				Fee:         new(big.Int).Mul(new(big.Int).SetUint64(txn.Gas()), txn.GasPrice()),
 			},
 			Gas:                new(big.Int).SetUint64(txn.Gas()),
 			GasPrice:           txn.GasPrice(),
