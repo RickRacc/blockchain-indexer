@@ -21,7 +21,6 @@ func (suite *BaseTestSuite) SetupSuite() {
 	if err != nil {
 		panic(err)
 	}
-	suite.deleteAllData()
 }
 
 func (suite *BaseTestSuite) TearDownSuite() {
@@ -29,6 +28,13 @@ func (suite *BaseTestSuite) TearDownSuite() {
 	if err != nil {
 		os.Exit(1)
 	}
+}
+
+func (suite *BaseTestSuite) BeforeTest(suiteName, testName string) {
+	suite.deleteAllData()
+}
+
+func (suite *BaseTestSuite) AfterTest(suiteName, testName string) {
 }
 
 func (suite *BaseTestSuite) deleteAllData() {

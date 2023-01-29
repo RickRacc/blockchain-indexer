@@ -31,6 +31,20 @@ func (repo *BlockRepository) Process(ctx context.Context, block *model.Block) (*
 	return b, nil
 }
 
+func (repo *BlockRepository) Delete(ctx context.Context, blockNumber int64) (*model.Block, error) {
+	stmt := fmt.Sprintf("delete from block where block_number=%v returning %s",
+		blockNumber, BLOCK_SELECT_COLS)
+
+	row := repo.pool.QueryRowContext(ctx, stmt)
+
+	b, err := repo.Read(row)
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
+
 func (repo *BlockRepository) Read(row *sql.Row) (*model.Block, error) {
 	var block model.Block
 

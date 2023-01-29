@@ -52,6 +52,27 @@ func (suite *TransactionPaymentRepositoryTestSuite) TestCreateTransaction() {
 	assert.NotNil(transactionPayment.UpdatedAt)
 }
 
+func (suite *TransactionPaymentRepositoryTestSuite) TestBlockCasacadeDelete() {
+	assert := assert.New(suite.T())
+	block := test.GetBlock()
+	ctx := context.Background()
+	b, _ := suite.blockRepo.Process(ctx, block)
+
+	transaction := test.GetEthTransaction()
+	transaction.BlockNumber = b.Number
+	transaction, _ = suite.transactionRepo.Save(ctx, transaction)
+
+	transactionPayment := test.GetTransactionPayment()
+	transactionPayment.TransactionId = transaction.Id
+	transactionPayment, _ = suite.transactionPaymentRepo.Save(ctx, transactionPayment)
+
+	suite.blockRepo.Delete(ctx, block.Number)
+
+	assert.NotNil(transactionPayment.Id)
+	assert.NotNil(transactionPayment.CreatedAt)
+	assert.NotNil(transactionPayment.UpdatedAt)
+}
+
 func TestTransactionPaymentRepositoryTestSuite(t *testing.T) {
 	suite.Run(t, new(TransactionPaymentRepositoryTestSuite))
 }
