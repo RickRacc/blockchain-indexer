@@ -23,11 +23,13 @@ type DefaultIndexer struct {
 func NewDefaultIndexer(
 	blockchain blockchain.Blockchain,
 	blockRepository *repository.BlockRepository,
+	blockPositionRepository *repository.IndexerPositionRepository,
 	transactionRepository *repository.TransactionRepository,
 	transactionPaymentRepository *repository.TransactionPaymentRepository) Indexer {
 	return &DefaultIndexer{
 		blockchain:                   blockchain,
 		blockRepository:              blockRepository,
+		blockPositionRepository:      blockPositionRepository,
 		transactionRepository:        transactionRepository,
 		transactionPaymentRepository: transactionPaymentRepository,
 	}

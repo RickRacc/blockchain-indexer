@@ -10,7 +10,7 @@ scratchpad
 *.dylib
 
 postgres/private.txt
-docker/geth
+_docker/geth
 
 # Test binary, built with `go test -c`
 *.test
