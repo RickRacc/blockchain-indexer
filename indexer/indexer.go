@@ -19,19 +19,23 @@ type DefaultIndexer struct {
 	blockRepository              *repository.BlockRepository
 	transactionRepository        *repository.TransactionRepository
 	transactionPaymentRepository *repository.TransactionPaymentRepository
-	blockPositionRepository      *repository.IndexerPositionRepository
+	indexerPositionRepository    *repository.IndexerPositionRepository
+	sequencerPositionRepository  *repository.SequencerPositionRepository
 }
 
 func NewDefaultIndexer(
 	blockchain blockchain.Blockchain,
 	blockRepository *repository.BlockRepository,
-	blockPositionRepository *repository.IndexerPositionRepository,
+	indexerPositionRepository *repository.IndexerPositionRepository,
+	sequencerPositionRepository *repository.SequencerPositionRepository,
 	transactionRepository *repository.TransactionRepository,
-	transactionPaymentRepository *repository.TransactionPaymentRepository) Indexer {
+	transactionPaymentRepository *repository.TransactionPaymentRepository,
+) Indexer {
 	return &DefaultIndexer{
 		blockchain:                   blockchain,
 		blockRepository:              blockRepository,
-		blockPositionRepository:      blockPositionRepository,
+		indexerPositionRepository:    indexerPositionRepository,
+		sequencerPositionRepository:  sequencerPositionRepository,
 		transactionRepository:        transactionRepository,
 		transactionPaymentRepository: transactionPaymentRepository,
 	}
@@ -55,7 +59,6 @@ func (indexer *DefaultIndexer) Index(startBlock int64, numBlocks int) {
 		<-blockChans
 		go indexer.indexBlock(i, blockChans)
 	}
-
 }
 
 func (indexer *DefaultIndexer) sequenceBlocks() {
@@ -70,6 +73,7 @@ func (indexer *DefaultIndexer) sequenceBlocks() {
 		delete all blocks after the match
 		re-fectch the blocks after the match
 	*/
+
 }
 
 func (indexer *DefaultIndexer) indexBlock(blockNum int64, blockChan chan<- int64) {
@@ -105,7 +109,11 @@ func (indexer *DefaultIndexer) indexBlock(blockNum int64, blockChan chan<- int64
 		CoinType: coin.ETH,
 		Position: blockNum,
 	}
-	indexer.blockPositionRepository.SaveCurrentPosition(ctx, position)
+	_, err = indexer.indexerPositionRepository.SaveCurrentPosition(ctx, position)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		return
+	}
 
 	blockChan <- blockNum
 }

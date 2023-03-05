@@ -56,8 +56,12 @@ func ProvideBlockRepository(pool *sql.DB) *repository.BlockRepository {
 	return repository.NewBlockRepository(pool)
 }
 
-func ProvideBlockPositionRepository(pool *sql.DB) *repository.IndexerPositionRepository {
+func ProvideIndexerPositionRepository(pool *sql.DB) *repository.IndexerPositionRepository {
 	return repository.NewIndexerPositionRepository(pool)
+}
+
+func ProvideSequencerPositionRepository(pool *sql.DB) *repository.SequencerPositionRepository {
+	return repository.NewSequencerPositionRepository(pool)
 }
 
 func ProvideTransactionRepository(pool *sql.DB) *repository.TransactionRepository {
@@ -90,7 +94,8 @@ func InitializeIndexer() (indexer.Indexer, error) {
 	return indexer.NewDefaultIndexer(
 		eth,
 		ProvideBlockRepository(pool),
-		ProvideBlockPositionRepository(pool),
+		ProvideIndexerPositionRepository(pool),
+		ProvideSequencerPositionRepository(pool),
 		ProvideTransactionRepository(pool),
 		ProvideTransactionPaymentRepository(pool),
 	), nil
