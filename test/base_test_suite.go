@@ -42,6 +42,10 @@ func (suite *BaseTestSuite) deleteAllData() {
 	if err != nil {
 		panic(err)
 	}
+	_, err = suite.Pool.Exec("TRUNCATE sequencer_position CASCADE")
+	if err != nil {
+		panic(err)
+	}
 	_, err = suite.Pool.Exec("TRUNCATE block CASCADE")
 	if err != nil {
 		panic(err)

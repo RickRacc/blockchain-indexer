@@ -18,7 +18,7 @@ func NewIndexerPositionRepository(pool *sql.DB) *IndexerPositionRepository {
 }
 
 func (repo *IndexerPositionRepository) GetCurrentPosition(ctx context.Context, coinType int16) (*model.IndexerPosition, error) {
-	stmt := fmt.Sprintf("select %s from indexer_position where conin_type=%v",
+	stmt := fmt.Sprintf("select %s from indexer_position where coin_type=%v",
 		INDEXER_POSITION_SELECT_COLS, coinType)
 
 	row := repo.pool.QueryRowContext(ctx, stmt)
