@@ -1,4 +1,4 @@
 package coin
 
-const BTC = 0
-const ETH = 60
+const BTC int16 = 0
+const ETH int16 = 60

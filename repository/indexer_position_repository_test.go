@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"go-bonotans/coin"
 	"go-bonotans/model"
 	"go-bonotans/test"
 	"testing"
@@ -26,20 +27,22 @@ func (suite *IndexerPositionRepositoryTestSuite) TearDownSuite() {
 func (suite *IndexerPositionRepositoryTestSuite) TestSaveCurrentPosition() {
 	assert := assert.New(suite.T())
 	indexerPosition := model.IndexerPosition{
-		CoinType: 0,
+		CoinType: coin.ETH,
 		Position: 1,
 	}
 
 	position, err := suite.repo.SaveCurrentPosition(context.Background(), &indexerPosition)
 	assert.NoError(err, "Saving indexer position returned an error")
 	assert.NotNil(position.Id)
+	assert.Equal(position.CoinType, indexerPosition.CoinType)
+	assert.Equal(position.Position, indexerPosition.Position)
 	assert.NotNil(position.CreatedAt)
 	assert.NotNil(position.UpdatedAt)
 }
 
 func (suite *IndexerPositionRepositoryTestSuite) TestGetCurrentPosition() {
 	assert := assert.New(suite.T())
-	const coinType int16 = 0
+	const coinType int16 = coin.ETH
 	indexerPosition := model.IndexerPosition{
 		CoinType: coinType,
 		Position: 1,
@@ -53,6 +56,7 @@ func (suite *IndexerPositionRepositoryTestSuite) TestGetCurrentPosition() {
 	position, err = suite.repo.GetCurrentPosition(ctx, coinType)
 	assert.NoError(err, "Getting sequencer current position returned an error")
 	assert.NotNil(position.Id)
+	assert.Equal(position.CoinType, indexerPosition.CoinType)
 	assert.Equal(position.Position, indexerPosition.Position)
 	assert.NotNil(position.CreatedAt)
 	assert.NotNil(position.UpdatedAt)
