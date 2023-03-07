@@ -25,6 +25,9 @@ func (repo *SequencerPositionRepository) GetCurrentPosition(ctx context.Context,
 
 	b, err := repo.Read(row)
 	if err != nil {
+		if err.Error() == "sql: no rows in result set" {
+			return nil, nil
+		}
 		return nil, err
 	}
 

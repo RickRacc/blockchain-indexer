@@ -5,15 +5,41 @@ import (
 	"math/big"
 )
 
-func GetBlock() *model.Block {
-	block := model.Block{
+var blocks = []model.Block{
+	model.Block{
 		ParentHash:   "parenthash",
 		Hash:         "hash",
 		Number:       1,
 		Transactions: nil,
-	}
+	},
+	model.Block{
+		ParentHash:   "parenthash2",
+		Hash:         "hash2",
+		Number:       2,
+		Transactions: nil,
+	},
+}
 
-	return &block
+func GetBlock() *model.Block {
+	//block := model.Block{
+	//	ParentHash:   "parenthash",
+	//	Hash:         "hash",
+	//	Number:       1,
+	//	Transactions: nil,
+	//}
+
+	return &blocks[0]
+}
+
+func GetBlocks() []model.Block {
+	//block := model.Block{
+	//	ParentHash:   "parenthash",
+	//	Hash:         "hash",
+	//	Number:       1,
+	//	Transactions: nil,
+	//}
+
+	return blocks
 }
 
 func GetEthTransaction() *model.EthTransaction {

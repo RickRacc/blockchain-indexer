@@ -49,11 +49,11 @@ func (suite *SequencerPositionRepositoryTestSuite) TestGetCurrentPosition() {
 	}
 
 	ctx := context.Background()
-	_, err := suite.repo.SaveCurrentPosition(ctx, &sequencerPosition)
-	assert.NoError(err, "Saving sequencer position returned an error")
+	//_, err := suite.repo.SaveCurrentPosition(ctx, &sequencerPosition)
+	//assert.NoError(err, "Saving sequencer position returned an error")
 
-	var position *model.SequencerPosition
-	position, err = suite.repo.GetCurrentPosition(ctx, coinType)
+	//var position *model.SequencerPosition
+	position, err := suite.repo.GetCurrentPosition(ctx, coinType)
 	assert.NoError(err, "Getting sequencer current position returned an error")
 	assert.NotNil(position.Id)
 	assert.Equal(position.CoinType, sequencerPosition.CoinType)

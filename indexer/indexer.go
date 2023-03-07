@@ -61,7 +61,7 @@ func (indexer *DefaultIndexer) Index(startBlock int64, numBlocks int) {
 	}
 }
 
-func (indexer *DefaultIndexer) sequenceBlocks() {
+func (indexer *DefaultIndexer) sequenceBlocks() error {
 	/**
 	 * last verified block
 	fetch (block) and (block + 1)[nextBlock] from db
@@ -73,7 +73,64 @@ func (indexer *DefaultIndexer) sequenceBlocks() {
 		delete all blocks after the match
 		re-fectch the blocks after the match
 	*/
+	ctx := context.Background()
+	sequencerPosition, err := indexer.sequencerPositionRepository.GetCurrentPosition(ctx, coin.ETH)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		return err
+	}
 
+	var currentPosition int64
+	var block, nextBlock *model.Block
+	if sequencerPosition == nil {
+		// No sequencer position indexed, find the first block from db
+		block, err = indexer.blockRepository.GetFirstBlock(ctx)
+		if err != nil {
+			return err
+		}
+
+		currentPosition = block.Number
+		sequencerPosition := &model.SequencerPosition{
+			CoinType: coin.ETH,
+			Position: currentPosition,
+		}
+		indexer.sequencerPositionRepository.SaveCurrentPosition(ctx, sequencerPosition)
+	}
+
+	nextBlock, err = indexer.blockRepository.GetBlock(ctx, currentPosition)
+	if err != nil {
+		return err
+	}
+
+	if nextBlock.ParentHash != block.Hash {
+		// fork condition
+		position := currentPosition
+		networkBlock := indexer.blockchain.GetBlock(ctx, big.NewInt(position))
+
+		for networkBlock.Hash != block.Hash && networkBlock.ParentHash != block.ParentHash {
+			position = position - 1
+			block, err = indexer.blockRepository.GetBlock(ctx, position)
+			if err != nil {
+
+			}
+			if block == nil {
+				// need to start from beginning
+			}
+			networkBlock = indexer.blockchain.GetBlock(ctx, big.NewInt(position))
+		}
+
+		var lastBlock *model.Block
+		lastBlock, err = indexer.blockRepository.GetLastBlock(ctx)
+
+		for i := position + 1; i < lastBlock.Number; i++ {
+			indexer.blockRepository.Delete(ctx, i)
+		}
+
+		// initiate indexing and sequencing from position + 1
+	}
+
+	//if (sequencerPosition.Position)
+	return nil
 }
 
 func (indexer *DefaultIndexer) indexBlock(blockNum int64, blockChan chan<- int64) {
